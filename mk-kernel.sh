@@ -52,6 +52,11 @@ case ${BOARD} in
 		DTB=rk3288-miniarm.dtb
 		CHIP="RK3288"
 	;; 
+	"rk3288-koala")
+		DEFCONFIG=rk3288-koala_defconfig
+		DTB=rk3288-koala.dtb
+		CHIP="RK3288"
+	;;
 	"kylin")
 		DEFCONFIG=rockchip_linux_defconfig
 		DTB=rk3036-kylin.dtb
@@ -68,6 +73,7 @@ echo Using ${DEFCONFIG}
 
 cd ${LOCALPATH}/kernel
 make ${DEFCONFIG}
+make -j8 rk3288-koala.dtb
 make -j8
 
 if [ $ARCH == "arm" ] ; then

@@ -48,6 +48,11 @@ case ${BOARD} in
 		DEFCONFIG=kylin-rk3036_defconfig
 		CHIP="RK3036"
 	;;
+	"rk3288-koala")
+		echo "koala platform"
+		DEFCONFIG=koala-rk3288_defconfig
+		CHIP="RK3288"
+	;;
 	*)
 	echo "board not support in U-boot"
 	;;
