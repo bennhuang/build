@@ -36,10 +36,10 @@ usage()
 If undefined, this script will set \$MACHINE to 'evb-rk3288'.
 "
 
-    ls sources/*/conf/machine/*.conf > /dev/null 2>&1
+    ls sources/*/conf/machine/*.conf sources/*/*/conf/machine/*.conf > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo -e "
-Supported machines: `echo; ls sources/*/conf/machine/*.conf \
+Supported machines: `echo; ls sources/*/conf/machine/*.conf sources/*/*/conf/machine/*.conf \
 | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
 
 To build for a machine listed above, run this script as:
@@ -100,14 +100,14 @@ OPTIND=$OLD_OPTIND
 
 # Print the usage menu if invalid options are specified
 if [ "${BUILD_DIR}" = "" ]; then
-   echo "<build-dir> undefined, use build as default dir"
+   echo "WARNING: <build-dir> undefined, use build as default dir"
    BUILD_DIR="build" 
 fi
 
 if [ -z "$1" ]; then
    DISTRO_FEATURES_remove="x11"
    DISTRO_FEATURES_append="wayland"
-   echo "<backend> undefined, use wayland as default backend"
+   echo "WARNING: <backend> undefined, use wayland as default backend"
 fi
 
 if [ "$(whoami)" = "root" ]; then
@@ -116,10 +116,11 @@ fi
 
 if [ -z "$MACHINE" ]; then
     MACHINE='evb-rk3288'
+    echo "WARNING: <machine> undefined, use evb-rk3288 as default machine"
 fi
 
 # Check the machine type specified
-LIST_MACHINES=`ls -1 $CWD/sources/*/conf/machine`
+LIST_MACHINES=`ls -1 $CWD/sources/*/conf/machine $CWD/sources/*/*/conf/machine/`
 VALID_MACHINE=`echo -e "$LIST_MACHINES" | grep ${MACHINE}.conf$ | wc -l`
 if [ "x$MACHINE" = "x" ] || [ "$VALID_MACHINE" = "0" ]; then
     echo -e "\nThe \$MACHINE you have specified ($MACHINE) is not supported by this build setup"
@@ -222,12 +223,16 @@ For more information about OpenEmbedded see their website:
 You can now run 'bitbake <target>'
 
 Common targets are:
+    core-image-base
+    core-image-full-cmdline
     core-image-minimal
     meta-toolchain
     meta-toolchain-sdk
     adt-installer
     meta-ide-support
-
+    core-image-sato
+    core-image-weston
+    core-image-x11
 EOF
 
 if [ -n "$generated_config" ]; then
