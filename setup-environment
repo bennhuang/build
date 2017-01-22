@@ -24,13 +24,13 @@
 CWD=`pwd`
 PROGNAME="setup-environment"
 
-DIST_FEATURES_remove="x11"
+DISTRO_FEATURES_remove="x11"
 DISTRO_FEATURES_append=" wayland"
 BUILD_DIR=""
 
 usage()
 {
-    echo -e "\nUsage: source $PROGNAME <build-dir>
+    echo -e "\nUsage: source $PROGNAME -e <backend> -b <build-dir>
     <build-dir>: specifies the build directory location (required)
 
 If undefined, this script will set \$MACHINE to 'evb-rk3288'.
@@ -59,11 +59,12 @@ clean_up()
 
 select_backend()
 {
+echo "select backend : $1"
   if [ "$1" = "wayland" ]; then
-      DIST_FEATURES_remove="x11"
+      DISTRO_FEATURES_remove="x11"
       DISTRO_FEATURES_append=" wayland"
   elif [ "$1" = "x11" ]; then
-      DIST_FEATURES_remove="wayland"
+      DISTRO_FEATURES_remove="wayland"
       DISTRO_FEATURES_append=" x11"
       echo "Using X11 backend with poky DIST_FEATURES"
   else
@@ -99,8 +100,14 @@ OPTIND=$OLD_OPTIND
 
 # Print the usage menu if invalid options are specified
 if [ "${BUILD_DIR}" = "" ]; then
-   usage && clean_up
-   return 1
+   echo "<build-dir> undefined, use build as default dir"
+   BUILD_DIR="build" 
+fi
+
+if [ -z "$1" ]; then
+   DISTRO_FEATURES_remove="x11"
+   DISTRO_FEATURES_append="wayland"
+   echo "<backend> undefined, use wayland as default backend"
 fi
 
 if [ "$(whoami)" = "root" ]; then
@@ -194,7 +201,7 @@ EOF
     done
 
     echo "DISTRO_FEATURES_append = \"$DISTRO_FEATURES_append\"" >> conf/local.conf
-    echo "DISTRO_FEATURES_remove = \"$DIST_FEATURES_remove\"" >> conf/local.conf
+    echo "DISTRO_FEATURES_remove = \"$DISTRO_FEATURES_remove\"" >> conf/local.conf
 
     echo 'IMAGE_FSTYPES = "ext4 rockchip-next-img"' >> conf/local.conf
 
