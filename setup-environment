@@ -23,7 +23,7 @@
 
 CWD=`pwd`
 PROGNAME="setup-environment"
-
+PACKAGE_CLASSES="package_deb"
 DISTRO_FEATURES_remove="x11"
 DISTRO_FEATURES_append=" wayland"
 BUILD_DIR=""
@@ -190,6 +190,7 @@ EOF
     sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" \
         -e "s,SDKMACHINE ??=.*,SDKMACHINE ??= '$SDKMACHINE',g" \
         -e "s,DISTRO ?=.*,DISTRO ?= '$DISTRO',g" \
+        -e "s,PACKAGE_CLASSES ?=.*,PACKAGE_CLASSES ?= '$PACKAGE_CLASSES',g" \
         -i conf/local.conf
 
     cp $TEMPLATES/* conf/
