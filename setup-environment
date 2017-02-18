@@ -24,13 +24,11 @@
 CWD=`pwd`
 PROGNAME="setup-environment"
 PACKAGE_CLASSES="package_deb"
-DISTRO_FEATURES_remove="x11"
-DISTRO_FEATURES_append=" wayland"
 BUILD_DIR=""
 
 usage()
 {
-    echo -e "\nUsage: source $PROGNAME -e <backend> -b <build-dir>
+    echo -e "\nUsage: source $PROGNAME -b <build-dir>
     <build-dir>: specifies the build directory location (required)
 
 If undefined, this script will set \$MACHINE to 'evb-rk3288'.
@@ -43,7 +41,7 @@ Supported machines: `echo; ls sources/*/conf/machine/*.conf sources/*/*/conf/mac
 | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
 
 To build for a machine listed above, run this script as:
-MACHINE=<machine> source $PROGNAME -e <x11,wayland> -b <build-dir>
+MACHINE=<machine> source $PROGNAME -b <build-dir>
 "
     fi
 }
@@ -57,30 +55,11 @@ clean_up()
    unset rockchip_flag
 }
 
-select_backend()
-{
-echo "select backend : $1"
-  if [ "$1" = "wayland" ]; then
-      DISTRO_FEATURES_remove="x11"
-      DISTRO_FEATURES_append=" wayland"
-  elif [ "$1" = "x11" ]; then
-      DISTRO_FEATURES_remove="wayland"
-      DISTRO_FEATURES_append=" x11"
-      echo "Using X11 backend with poky DIST_FEATURES"
-  else
-      echo "Invalid backend specified - use wayland, or x11"
-      exit
-  fi
-}
-
 # get command line options
 OLD_OPTIND=$OPTIND
 while getopts "e:h:b:gh" rockchip_flag
 do
     case $rockchip_flag in
-        e)
-            select_backend "$OPTARG"
-            ;;
         h)
             usage
             clean_up
@@ -101,13 +80,7 @@ OPTIND=$OLD_OPTIND
 # Print the usage menu if invalid options are specified
 if [ "${BUILD_DIR}" = "" ]; then
    echo "WARNING: <build-dir> undefined, use build as default dir"
-   BUILD_DIR="build" 
-fi
-
-if [ -z "$1" ]; then
-   DISTRO_FEATURES_remove="x11"
-   DISTRO_FEATURES_append="wayland"
-   echo "WARNING: <backend> undefined, use wayland as default backend"
+   BUILD_DIR="build"
 fi
 
 if [ "$(whoami)" = "root" ]; then
@@ -180,7 +153,7 @@ if [ ! -e conf/local.conf.sample ]; then
     mv conf/local.conf conf/local.conf.sample
 
     # Generate the local.conf based on the Yocto defaults
-    TEMPLATES=$CWD/sources/base/conf 
+    TEMPLATES=$CWD/sources/base/conf
     grep -v '^#\|^$' conf/local.conf.sample > conf/local.conf
     cat >> conf/local.conf <<EOF
 
@@ -201,9 +174,6 @@ EOF
             ln -s $s/site.conf conf
         fi
     done
-
-    echo "DISTRO_FEATURES_append = \"$DISTRO_FEATURES_append\"" >> conf/local.conf
-    echo "DISTRO_FEATURES_remove = \"$DISTRO_FEATURES_remove\"" >> conf/local.conf
 
     echo 'IMAGE_FSTYPES = "ext4 rockchip-next-img"' >> conf/local.conf
 
