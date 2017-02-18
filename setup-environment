@@ -31,7 +31,7 @@ usage()
     echo -e "\nUsage: source $PROGNAME -b <build-dir>
     <build-dir>: specifies the build directory location (required)
 
-If undefined, this script will set \$MACHINE to 'evb-rk3288'.
+If undefined, this script will set \$MACHINE to 'evb-rk3288'\$DISTRO to 'rk-x11'.
 "
 
     ls sources/*/conf/machine/*.conf sources/*/*/conf/machine/*.conf > /dev/null 2>&1
@@ -40,8 +40,11 @@ If undefined, this script will set \$MACHINE to 'evb-rk3288'.
 Supported machines: `echo; ls sources/*/conf/machine/*.conf sources/*/*/conf/machine/*.conf \
 | sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
 
-To build for a machine listed above, run this script as:
-MACHINE=<machine> source $PROGNAME -b <build-dir>
+Supported distros: `echo; ls sources/*/conf/distro/*.conf sources/*/*/conf/distro/*.conf \
+| sed s/\.conf//g | sed -r 's/^.+\///' | xargs -I% echo -e "\t%"`
+
+You can run this script as:
+MACHINE=<machine> DISTRO=<DISTRO> source $PROGNAME -b <build-dir>
 "
     fi
 }
@@ -105,12 +108,20 @@ else
     fi
 fi
 
+LIST_DISTRO=`ls -1 $CWD/sources/*/conf/distro $CWD/sources/*/*/conf/distro/`
+VALID_DISTRO=`echo -e "$LIST_DISTRO" | grep ${DISTRO}.conf$ | wc -l`
+if [ "x$DISTRO" = "x" ] || [ "$VALID_DISTRO" = "0" ]; then
+    echo -e "\nThe \$DISTRO you have specified ($DISTRO) is not supported by this build setup"
+    usage && clean_up
+    return 1
+fi
+
 if [ -z "$SDKMACHINE" ]; then
     SDKMACHINE='i686'
 fi
 
 if [ -z "$DISTRO" ]; then
-    DISTRO='poky'
+    DISTRO='rk-x11'
 fi
 
 OEROOT=$PWD/sources/poky

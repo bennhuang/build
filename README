@@ -14,7 +14,7 @@ Quick Start Guide
 Once you have downloaded the source of all projects, you will have to
 call:
 
-$: machine=<MACHINE> . ./setup-environment -t <x11/wayland> -b <build_dir>
+$: machine=<MACHINE> DISTRO=<DISTRO> . ./setup-environment -b <build_dir>
 
 After this step, you will be with everything need for build an image.
 
