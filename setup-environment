@@ -186,8 +186,6 @@ EOF
         fi
     done
 
-    echo 'IMAGE_FSTYPES = "ext4 rockchip-next-img"' >> conf/local.conf
-
     generated_config=1
 fi
 
