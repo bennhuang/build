@@ -108,6 +108,10 @@ else
     fi
 fi
 
+if [ -z "$DISTRO" ]; then
+    DISTRO='rk-x11'
+fi
+
 LIST_DISTRO=`ls -1 $CWD/sources/*/conf/distro $CWD/sources/*/*/conf/distro/`
 VALID_DISTRO=`echo -e "$LIST_DISTRO" | grep ${DISTRO}.conf$ | wc -l`
 if [ "x$DISTRO" = "x" ] || [ "$VALID_DISTRO" = "0" ]; then
@@ -118,10 +122,6 @@ fi
 
 if [ -z "$SDKMACHINE" ]; then
     SDKMACHINE='i686'
-fi
-
-if [ -z "$DISTRO" ]; then
-    DISTRO='rk-x11'
 fi
 
 OEROOT=$PWD/sources/poky
