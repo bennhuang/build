@@ -22,13 +22,17 @@ CHIP=""
 DEVICE=""
 IMAGE=""
 DEVICE=""
-SEEK=""
+SEEK="0"
 
 PATH=$PATH:$TOOLPATH
 
 usage() {
-	echo -e "\nUsage: emmc: build/flash_tool.sh -c rk3288  -p system -i out/system.img  \n"
+	echo -e "\nUsage: rk3x \n"
+	echo -e	"		emmc: build/flash_tool.sh -c rk3288  -p system -i out/system.img  \n"
 	echo -e "       sdcard: build/flash_tool.sh -c rk3288  -d /dev/sdb -p system  -i out/system.img \n"
+	echo -e "\nUsage: rv \n"
+	echo -e "       sdcard: build/flash_tool.sh -c rk1108 -i out/firmware.img \n"
+
 }
 
 finish() {
@@ -89,6 +93,8 @@ flash_upgt()
 		sudo upgrade_tool db  ${LOCALPATH}/rkbin/rk33/RK3399MiniLoaderAll_V1.05.bin
 	elif [ "${CHIP}" == "rk3228" ] ; then
 		sudo upgrade_tool db  ${LOCALPATH}/rkbin/rk33/RK3328MiniLoaderAll_V1.05.bin
+	elif [ "${CHIP}" == "rv1108" ] ; then
+		sudo upgrade_tool db  ${LOCALPATH}/rkbin/rv1x/RK1108_usb_boot.bin
 	fi
 
 	sudo upgrade_tool wl ${SEEK} ${IMAGE}
