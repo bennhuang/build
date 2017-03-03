@@ -177,7 +177,11 @@ EOF
         -e "s,PACKAGE_CLASSES ?=.*,PACKAGE_CLASSES ?= '$PACKAGE_CLASSES',g" \
         -i conf/local.conf
 
-    cp $TEMPLATES/* conf/
+    if [[ ${DISTRO:0:2} == "rv" ]];then
+        cp $TEMPLATES/bblayers_rv.conf conf/bblayers.conf
+    else
+        cp $TEMPLATES/bblayers.conf conf/bblayers.conf
+    fi
 
     for s in $HOME/.oe $HOME/.yocto; do
         if [ -e $s/site.conf ]; then
@@ -202,17 +206,6 @@ For more information about OpenEmbedded see their website:
 
 You can now run 'bitbake <target>'
 
-Common targets are:
-    core-image-base
-    core-image-full-cmdline
-    core-image-minimal
-    meta-toolchain
-    meta-toolchain-sdk
-    adt-installer
-    meta-ide-support
-    core-image-sato
-    core-image-weston
-    core-image-x11
 EOF
 
 if [ -n "$generated_config" ]; then
