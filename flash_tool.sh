@@ -79,10 +79,6 @@ if [ ! $IMAGE ] ; then
 	exit
 fi
 
-if [ ! -e ${EXTLINUXPATH}/${CHIP}.conf ] ; then
-	CHIP="rk3288"
-fi
-
 flash_upgt() 
 {
 	if [ "${CHIP}" == "rk3288" ] ; then
@@ -98,6 +94,8 @@ flash_upgt()
 	fi
 
 	sudo upgrade_tool wl ${SEEK} ${IMAGE}
+
+	sleep 3
 
 	sudo upgrade_tool rd
 }
