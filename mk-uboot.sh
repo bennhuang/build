@@ -53,6 +53,11 @@ case ${BOARD} in
 		DEFCONFIG=koala-rk3288_defconfig
 		CHIP="RK3288"
 	;;
+	"rk3288-twys")
+                echo "twys platform"
+                DEFCONFIG=twys-rk3288_defconfig
+                CHIP="RK3288"
+        ;;
 	*)
 	echo "board not support in U-boot"
 	;;

@@ -57,6 +57,11 @@ case ${BOARD} in
 		DTB=rk3288-koala.dtb
 		CHIP="RK3288"
 	;;
+	"rk3288-twys")
+                DEFCONFIG=rk3288-twys_defconfig
+                DTB=rk3288-twys.dtb
+                CHIP="RK3288"
+        ;;
 	"kylin")
 		DEFCONFIG=rockchip_linux_defconfig
 		DTB=rk3036-kylin.dtb
@@ -73,8 +78,8 @@ echo Using ${DEFCONFIG}
 
 cd ${LOCALPATH}/kernel
 make ${DEFCONFIG}
-make -j8 rk3288-koala.dtb
-make -j8
+make -j8 ${DTB} zImage
+make -j8 modules 
 
 if [ $ARCH == "arm" ] ; then
 	cp ${LOCALPATH}/kernel/arch/arm/boot/zImage ${OUT}/kernel/
